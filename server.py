@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 import tempfile
@@ -7,6 +8,9 @@ from fastapi import FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from faster_whisper import WhisperModel
 
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+log = logging.getLogger(__name__)
 
 app = FastAPI(title="splitwhisper", version="0.1.0")
 
@@ -47,7 +51,11 @@ async def transcribe(
     tmp_path = tmp.name
     shutil.copyfileobj(file.file, tmp)
 
+  file_size = os.path.getsize(tmp_path)
+  log.info("Recebido arquivo %s, %.1f KB", file.filename or "(sem nome)", file_size / 1024)
+
   try:
+    log.info("Iniciando transcrição (modelo=%s, beam_size=%s)...", MODEL_NAME, BEAM_SIZE)
     segments_iter, _info = model.transcribe(
       tmp_path,
       language="pt",
@@ -69,6 +77,11 @@ async def transcribe(
       )
 
     full_text = " ".join(t for t in text_parts if t).strip()
+    log.info(
+      "Transcrição concluída: %d segmentos, %d caracteres",
+      len(all_segments),
+      len(full_text),
+    )
 
     return JSONResponse(
       {
@@ -76,6 +89,9 @@ async def transcribe(
         "segments": all_segments,
       }
     )
+  except Exception as e:
+    log.exception("Erro na transcrição: %s", e)
+    raise
   finally:
     try:
       os.remove(tmp_path)
