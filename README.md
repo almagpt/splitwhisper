@@ -26,9 +26,10 @@ pelo worker de vídeos longos do SplitReact.
 ## Variáveis de ambiente
 
 - `WHISPER_MODEL` — nome do modelo Faster-Whisper (ex.: `small`, `medium`, `large-v3`). Padrão: `large-v3`.
-- `WHISPER_DEVICE` — `cpu` ou `cuda`. No Railway, provavelmente `cpu`. Padrão: `cpu`.
-- `WHISPER_COMPUTE_TYPE` — tipo de compute do modelo, ex.: `int8_float16`, `int8`, `float16`. Padrão: `int8_float16`.
+- `WHISPER_DEVICE` — `cpu` ou `cuda`. No Railway use `cpu`. Padrão: `cpu`.
+- `WHISPER_COMPUTE_TYPE` — tipo de compute. Em CPU o padrão é `int8`; em CUDA é `int8_float16`. Não é necessário definir no Railway.
 - `SPLITWHISPER_AUTH_TOKEN` — opcional. Se definido, o servidor exige `Authorization: Bearer <TOKEN>` nas requisições de `/transcribe`.
+- `HF_TOKEN` — opcional. Token do Hugging Face para rate limits melhores ao baixar o modelo (evita o warning no primeiro deploy).
 
 ## Rodando localmente
 

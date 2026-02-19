@@ -13,7 +13,9 @@ app = FastAPI(title="splitwhisper", version="0.1.0")
 
 MODEL_NAME = os.getenv("WHISPER_MODEL", "large-v3")
 DEVICE = os.getenv("WHISPER_DEVICE", "cpu")
-COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8_float16")
+# int8_float16 só funciona em GPU; em CPU (ex.: Railway) usar int8
+_COMPUTE_DEFAULT = "int8_float16" if DEVICE == "cuda" else "int8"
+COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", _COMPUTE_DEFAULT)
 AUTH_TOKEN = os.getenv("SPLITWHISPER_AUTH_TOKEN", "").strip() or None
 
 
