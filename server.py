@@ -3,7 +3,7 @@ import shutil
 import tempfile
 from typing import List
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from faster_whisper import WhisperModel
 
@@ -35,7 +35,7 @@ def _check_auth(header_value: str | None) -> None:
 @app.post("/transcribe")
 async def transcribe(
   file: UploadFile = File(...),
-  authorization: str | None = None,
+  authorization: str | None = Header(None, alias="Authorization"),
 ) -> JSONResponse:
   _check_auth(authorization or os.getenv("SPLITWHISPER_AUTH_HEADER"))
 
