@@ -11,11 +11,14 @@ from faster_whisper import WhisperModel
 app = FastAPI(title="splitwhisper", version="0.1.0")
 
 
-MODEL_NAME = os.getenv("WHISPER_MODEL", "large-v3")
+# Modelo menor = menos CPU e memória (tiny, base, small, medium, large-v3)
+MODEL_NAME = os.getenv("WHISPER_MODEL", "small")
 DEVICE = os.getenv("WHISPER_DEVICE", "cpu")
 # int8_float16 só funciona em GPU; em CPU (ex.: Railway) usar int8
 _COMPUTE_DEFAULT = "int8_float16" if DEVICE == "cuda" else "int8"
 COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", _COMPUTE_DEFAULT)
+# beam_size 1 = decoding guloso, mais rápido e leve; 5 = melhor qualidade, mais custo
+BEAM_SIZE = int(os.getenv("WHISPER_BEAM_SIZE", "1"))
 AUTH_TOKEN = os.getenv("SPLITWHISPER_AUTH_TOKEN", "").strip() or None
 
 
@@ -48,7 +51,7 @@ async def transcribe(
     segments_iter, _info = model.transcribe(
       tmp_path,
       language="pt",
-      beam_size=5,
+      beam_size=BEAM_SIZE,
       word_timestamps=False,
     )
 

@@ -25,7 +25,8 @@ pelo worker de vídeos longos do SplitReact.
 
 ## Variáveis de ambiente
 
-- `WHISPER_MODEL` — nome do modelo Faster-Whisper (ex.: `small`, `medium`, `large-v3`). Padrão: `large-v3`.
+- `WHISPER_MODEL` — nome do modelo Faster-Whisper (`tiny`, `base`, `small`, `medium`, `large-v3`). Padrão: `small` (menos CPU/memória).
+- `WHISPER_BEAM_SIZE` — tamanho do beam na decodificação (1 = mais rápido e leve, 5 = melhor qualidade). Padrão: `1`.
 - `WHISPER_DEVICE` — `cpu` ou `cuda`. No Railway use `cpu`. Padrão: `cpu`.
 - `WHISPER_COMPUTE_TYPE` — tipo de compute. Em CPU o padrão é `int8`; em CUDA é `int8_float16`. Não é necessário definir no Railway.
 - `SPLITWHISPER_AUTH_TOKEN` — opcional. Se definido, o servidor exige `Authorization: Bearer <TOKEN>` nas requisições de `/transcribe`.
